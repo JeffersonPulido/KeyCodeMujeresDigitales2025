@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz de JavaScript y Git</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>Quiz de JavaScript, Git y Terminal</h1>
+    <div id="quiz-box">
+      <div id="question"></div>
+      <div id="options"></div>
+      <button id="next-btn" disabled>Siguiente</button>
+    </div>
+    <div id="result-box" class="hidden">
+      <h2>Resultados</h2>
+      <p id="score"></p>
+      <button onclick="location.reload()">Reiniciar</button>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
