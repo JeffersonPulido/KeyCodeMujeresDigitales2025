@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, MaxLength, MinLength } from "class-validator";
+import { IsEmail, IsInt, IsNotEmpty, IsOptional, MaxLength, Min, MinLength } from "class-validator";
 
 export class CreateUserDTO {
     @IsNotEmpty()
@@ -12,4 +12,9 @@ export class CreateUserDTO {
     @MinLength(6)
     @MaxLength(10)
     password: string;
+
+    @IsOptional()
+    @IsInt()
+    @Min(0,{ message: "La edad debe ser mayor o igual a 0" })
+    age?: number;
 }
