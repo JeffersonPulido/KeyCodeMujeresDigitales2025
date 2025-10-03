@@ -1,10 +1,9 @@
-import { IsEmail, MaxLength, MinLength } from "class-validator";
+import { IsEmail, Length } from "class-validator";
 
 export class LoginDTO {
     @IsEmail()
     email: string;
 
-    @MinLength(6)
-    @MaxLength(10)
+    @Length(6, 10, { message: "La contraseña debe tener una longitud de minimo 6 caracteres y maximo 10" })
     password: string;
 }
