@@ -18,6 +18,12 @@ export class UsersService {
         return this.usersRepo.find();
     }
 
+    /**
+     * findOne: Method to find unique register to user repository
+     * @typeParam id - { String } - Id for recognize user
+     * @returns IUser - Unique register
+     */
+
     async findOne(id: number) {
         const userFind = await this.usersRepo.findOne({ where: { id } })
         if (!userFind) throw new NotFoundException('Usuario no encontrado')
