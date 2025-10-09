@@ -4,8 +4,8 @@ import { IProducts } from 'src/interfaces';
 @Injectable()
 export class ProductsService {
     private products: IProducts[] = [
-        { id: 1, name: 'Carne', description: 'Cerdito x lb', price: 15000 },
-        { id: 1, name: 'Pollo', description: 'Alitas x lb', price: 20000 }
+        { id: 1, name: 'CARNE', description: 'Cerdito x lb', price: 15000 },
+        { id: 2, name: 'POLLO', description: 'Alitas x lb', price: 20000 }
     ]
 
     findAll(): IProducts[] {
@@ -16,6 +16,16 @@ export class ProductsService {
         const productFind = this.products.find((product) => product.id === id)
         if (!productFind) throw new NotFoundException('Producto no encontrado')
         return productFind
+    }
+
+    //Me devuelve un producto por su nombre
+    findByName(name: string): IProducts {
+        const productFind = this.products.find(
+            (product) =>
+                product.name === name,
+        );
+        if (!productFind) throw new NotFoundException('Producto no encontrado');
+        return productFind;
     }
 
     create(product: Omit<IProducts, 'id'>): IProducts {

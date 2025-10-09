@@ -3,6 +3,7 @@ import { ProductsService } from './products.service';
 import { CreateProductDTO } from 'src/dto/create-product.dto';
 import { UpdateProductDTO } from 'src/dto/update-product.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
+import { ParseUpperTrimPipe } from 'src/common/pipes/parse-uppertrim.pipe';
 
 @Controller('products')
 export class ProductsController {
@@ -17,6 +18,12 @@ export class ProductsController {
     encontrarUnoPorId(@Param('id') id: string) {
         return this.productsService.findOne(Number(id))
     }
+
+    @Get('by-name/:name') //La ruta es http://localhost:3000/products/by-name/perro
+    findByName(@Param('name', ParseUpperTrimPipe) name: string) {
+        return this.productsService.findByName(name);
+    }
+
 
     @UseGuards(JwtAuthGuard)
     @Post()
