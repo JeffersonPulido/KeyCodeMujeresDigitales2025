@@ -10,4 +10,8 @@ export class CreateProductDTO {
     @IsNotEmpty()
     @IsInt()
     price: number;
+    
+    @IsNotEmpty()
+    @IsInt()
+    stock: number;
 }

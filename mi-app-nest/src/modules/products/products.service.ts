@@ -1,55 +1,55 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { CreateProductDTO } from 'src/dto/create-product.dto';
+import { UpdateProductDTO } from 'src/dto/update-product.dto';
+import { Product } from 'src/entities/product.entity';
 import { IProducts } from 'src/interfaces';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ProductsService {
-    private products: IProducts[] = [
-        { id: 1, name: 'CARNE', description: 'Cerdito x lb', price: 15000 },
-        { id: 2, name: 'POLLO', description: 'Alitas x lb', price: 20000 }
-    ]
+    constructor(@InjectRepository(Product)
+    private productsRepo: Repository<Product>) {}
 
-    findAll(): IProducts[] {
-        return this.products
+    findAll() {
+        return this.productsRepo.findBy({ status: true });
     }
 
-    findOne(id: number): IProducts {
-        const productFind = this.products.find((product) => product.id === id)
+    async findOne(id: number) {
+        const productFind = await this.productsRepo.findOne({ where: { id }})
         if (!productFind) throw new NotFoundException('Producto no encontrado')
         return productFind
     }
 
     //Me devuelve un producto por su nombre
-    findByName(name: string): IProducts {
-        const productFind = this.products.find(
-            (product) =>
-                product.name === name,
-        );
+    findByName(name: string) {
+        const productFind = this.productsRepo.findOne({ where: { name }});
         if (!productFind) throw new NotFoundException('Producto no encontrado');
         return productFind;
     }
 
-    create(product: Omit<IProducts, 'id'>): IProducts {
-        const newId = this.products.length > 0
-            ? this.products[this.products.length - 1].id + 1
-            : 1;
+    create(newProduct: CreateProductDTO) {
+        const productCreated = this.productsRepo.create(newProduct);
+        return this.productsRepo.save(productCreated);
+        
+    }
 
-        const newProduct: IProducts = {
-            id: newId, ...product
+    async update(id: number, updateProduct: UpdateProductDTO) {
+        await this.productsRepo.update(id, updateProduct);
+        return this.findOne(id)
+    }
+
+    async disabled(id: number) {
+        const productFind = await this.productsRepo.findOne({ where: { id }})
+
+        if (!productFind){
+            throw new NotFoundException("Producto no encontrado")
         }
 
-        this.products.push(newProduct);
-        return newProduct;
-    }
+        productFind.status = false;
+        await this.productsRepo.save(productFind);
 
-    update(id: number, newProduct: Omit<IProducts, 'id'>): IProducts {
-        const product = this.findOne(id);
-        Object.assign(product, newProduct)
-        return product;
-    }
-
-    remove(id: number): void {
-        const product = this.products.findIndex((product) => product.id === id);
-        this.products.splice(product, 1)
+        return { message: `Producto ${id} desactivado correctamente`, productFind }
     }
 
 }
