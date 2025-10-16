@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Quiz: Nest, TypeORM, DTO, Guards, JWT, Roles</title>
+    <style>
+        :root {
+            --bg: #0f1724;
+            --card: #0b1220;
+            --accent: #06b6d4;
+            --muted: #94a3b8;
+            --ok: #10b981;
+            --bad: #ef4444
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: Inter, ui-sans-serif, system-ui, Segoe UI, Roboto, 'Helvetica Neue', Arial
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(180deg, #071026 0%, #071422 100%);
+            color: #e6eef6;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 28px
+        }
+
+        .app {
+            width: 100%;
+            max-width: 1100px
+        }
+
+        header {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 18px
+        }
+
+        h1 {
+            font-size: 20px;
+            margin: 0
+        }
+
+        .controls {
+            margin-left: auto;
+            display: flex;
+            gap: 8px;
+            align-items: center
+        }
+
+        .card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(2, 6, 23, 0.6);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            gap: 14px
+        }
+
+        .left {
+            min-height: 480px
+        }
+
+        .participants {
+            max-height: 420px;
+            overflow: auto;
+            margin-top: 12px
+        }
+
+        .person {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            background: rgba(255, 255, 255, 0.02)
+        }
+
+        label {
+            font-size: 13px;
+            color: var(--muted)
+        }
+
+        select,
+        input {
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            background: transparent;
+            color: inherit
+        }
+
+        .question-area {
+            display: flex;
+            flex-direction: column;
+            gap: 10px
+        }
+
+        .question {
+            font-weight: 600
+        }
+
+        .answers {
+            display: flex;
+            flex-direction: column;
+            gap: 8px
+        }
+
+        button {
+            cursor: pointer;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 0;
+            background: var(--accent);
+            color: #00202a;
+            font-weight: 700
+        }
+
+        .secondary {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: var(--muted);
+            font-weight: 600
+        }
+
+        .small {
+            font-size: 13px;
+            padding: 6px 8px
+        }
+
+        .summary {
+            margin-top: 12px
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse
+        }
+
+        th,
+        td {
+            padding: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+            text-align: left
+        }
+
+        .correct {
+            color: var(--ok);
+            font-weight: 700
+        }
+
+        .wrong {
+            color: var(--bad);
+            font-weight: 700
+        }
+
+        .muted {
+            color: var(--muted)
+        }
+
+        footer {
+            margin-top: 12px;
+            color: var(--muted);
+            font-size: 13px
+        }
+
+        @media(max-width:900px) {
+            .grid {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <header>
+            <div>
+                <h1>Quiz: NestJS / TypeORM / DTO / Guards / JWT / Roles</h1>
+                <div class="muted">48 preguntas — cada persona puede responder hasta 2 preguntas</div>
+            </div>
+            <div class="controls card">
+                <label>Participantes (2–24)</label>
+                <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+                    <input id="numParticipants" type="number" min="2" max="24" value="24" style="width:84px" />
+                    <button id="resetParticipants" class="small secondary">Actualizar</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="grid">
+            <div class="left card">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                    <div>
+                        <label>Pregunta actual</label>
+                        <div id="qIndex" class="muted">0 / 48</div>
+                    </div>
+                    <div>
+                        <label>Seleccionar persona</label>
+                        <select id="personSelect"></select>
+                    </div>
+                </div>
+
+                <div class="question-area" style="margin-top:12px">
+                    <div class="question" id="questionText">Pulsa "Siguiente pregunta" para empezar</div>
+                    <div class="answers" id="answers"></div>
+                    <div style="display:flex;gap:8px;margin-top:8px">
+                        <button id="nextBtn">Siguiente pregunta</button>
+                        <button id="submitBtn" class="small secondary" disabled>Enviar respuesta</button>
+                        <button id="finishBtn" class="small secondary">Finalizar y ver resultados</button>
+                    </div>
+                    <div id="info" class="muted" style="margin-top:8px"></div>
+                </div>
+
+                <div class="summary">
+                    <label>Historial (últimas 6 respuestas)</label>
+                    <div id="history" class="muted" style="margin-top:8px"></div>
+                </div>
+            </div>
+
+            <div class="right card">
+                <label>Participantes</label>
+                <div class="participants" id="participantsList"></div>
+                <div style="display:flex;gap:8px;margin-top:10px">
+                    <button id="showAllResults" class="small">Mostrar resumen final</button>
+                    <button id="exportCSV" class="small secondary">Exportar CSV</button>
+                </div>
+                <footer>Nota: por defecto hay 24 participantes (cada uno puede responder 2 preguntas). Puedes ajustar el
+                    número arriba.</footer>
+            </div>
+        </div>
+
+        <!-- Modal summary -->
+        <div id="modal"
+            style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);align-items:center;justify-content:center">
+            <div
+                style="width:90%;max-width:980px;max-height:90%;overflow:auto;padding:18px;border-radius:12px;background:linear-gradient(180deg,#071422,#071026)">
+                <h2>Resumen final</h2>
+                <div id="finalTable"></div>
+                <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+                    <button id="closeModal" class="small secondary">Cerrar</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ======== Preguntas (48) ========
+        const questions = [
+            { q: '¿Qué es NestJS?', choices: ['Un ORM para Node', 'Un framework para construir aplicaciones Node escalables', 'Un gestor de paquetes', 'Un servicio de hosting'], a: 1 },
+            { q: '¿Cuál es la decoración usada para crear un controlador en Nest?', choices: ['@Injectable()', '@Controller()', '@Module()', '@Get()'], a: 1 },
+            { q: '¿Qué hace @Injectable() en Nest?', choices: ['Define un DTO', 'Marca una clase para inyección de dependencias', 'Define una ruta', 'Configura guardias'], a: 1 },
+            { q: 'En TypeORM, ¿qué decorador indica la columna primaria?', choices: ['@PrimaryGeneratedColumn()', '@ColumnPrimary()', '@Id()', '@PK()'], a: 0 },
+            { q: '¿Qué es un DTO?', choices: ['Data Transfer Object', 'Data Type Operator', 'Domain Type Option', 'Direct Transfer Object'], a: 0 },
+            { q: '¿Para qué sirve un Guard en NestJS?', choices: ['Persistir datos', 'Validar autorizaciones antes de ejecutar un handler', 'Transformar respuestas', 'Loguear errores'], a: 1 },
+            { q: '¿Qué es JWT?', choices: ['Un tipo de base de datos', 'Un formato de token para autenticación', 'Un framework CSS', 'Un ORM'], a: 1 },
+            { q: 'En Nest, ¿cómo defines una ruta GET en un controlador?', choices: ['@Get("/path")', 'get("/path")', 'router.get("/path")', '@Route("/path")'], a: 0 },
+            { q: 'TypeORM: ¿qué tipo de relación usarías para muchos a muchos?', choices: ['@OneToOne', '@OneToMany', '@ManyToMany', '@ManyToOne'], a: 2 },
+            { q: '¿Qué hace class-validator en DTOs?', choices: ['Permite validar y decorar propiedades', 'Conecta a la base de datos', 'Genera migraciones', 'Maneja autenticación'], a: 0 },
+            { q: '¿Cuál es el propósito de un Module en Nest?', choices: ['Agrupar providers/controllers relacionados', 'Crear tablas en BD', 'Enviar correos', 'Gestionar tokens JWT'], a: 0 },
+            { q: '¿Qué decorador transforma y valida un DTO en un controlador?', choices: ['@ValidateBody()', '@UsePipes(ValidationPipe)', '@UseGuards(ValidationGuard)', '@TransformBody()'], a: 1 },
+            { q: 'En JWT, ¿qué contiene normalmente el "payload"?', choices: ['Código fuente', 'Claims sobre el usuario (id, roles)', 'La clave privada', 'La base de datos'], a: 1 },
+            { q: 'TypeORM: ¿qué comando genera una migración (CLI)?', choices: ['typeorm migration:generate', 'typeorm create:migration', 'npm run gen:migration', 'typeorm:make:migration'], a: 0 },
+            { q: '¿Qué es un Provider en Nest?', choices: ['Un servicio que puede ser inyectado', 'Un tipo de controlador', 'Un DTO especial', 'Una entidad de TypeORM'], a: 0 },
+            { q: '¿Cómo protegerías una ruta para que solo usuarios con rol ADMIN accedan?', choices: ['Con DTO', 'Con un Guard que verifique roles', 'Con TypeORM', 'Con una migración'], a: 1 },
+            { q: '¿Qué es @Body() en un controlador de Nest?', choices: ['Inyecta el body de la petición', 'Define un DTO', 'Valida la petición', 'Protege la ruta'], a: 0 },
+            { q: 'TypeORM: ¿qué decorador se usa para columnas regulares?', choices: ['@Column()', '@Field()', '@Property()', '@Attr()'], a: 0 },
+            { q: '¿Cuál es la estrategia común para almacenar JWTs en el frontend?', choices: ['En localStorage o cookies (con HttpOnly preferible)', 'Guardar en la base de datos', 'En archivos del sistema', 'No almacenar JWT'], a: 0 },
+            { q: '¿Qué hace @UseGuards()?', choices: ['Aplica guardias a rutas o controladores', 'Valida DTOs', 'Genera tokens JWT', 'Crea migraciones'], a: 0 },
+            { q: '¿Qué módulo provee soporte para TypeORM en Nest?', choices: ['TypeOrmModule', 'OrmNestModule', 'DatabaseModule', 'NestTypeModule'], a: 0 },
+            { q: '¿Cuál es el propósito de @GetRepositoryToken en tests?', choices: ['Obtener token JWT', 'Inyectar un repositorio en tests', 'Crear migraciones', 'Configurar guardias'], a: 1 },
+            { q: '¿Qué hace @Param("id") en un controlador?', choices: ['Obtiene el parámetro de ruta "id"', 'Valida el body', 'Transforma el DTO', 'Crea un JWT'], a: 0 },
+            { q: '¿Qué significa sincronizar entidades en TypeORM (synchronize:true)?', choices: ['Sincroniza el schema con las entidades automáticamente (no recomendado en prod)', 'Sincroniza los tokens JWT', 'Sincroniza roles', 'Sincroniza los DTOs'], a: 0 },
+            { q: '¿Cuál es la forma de firmar un JWT?', choices: ['Con una clave/secret o par de llaves', 'Con class-validator', 'Con TypeORM', 'Con DTOs'], a: 0 },
+            { q: '¿Qué operador en un Guard devuelve si deja pasar la petición?', choices: ['false/true', 'next()', 'pass()', 'allow()'], a: 0 },
+            { q: 'En Nest, ¿qué decorador se usa para marcar un módulo globalmente disponible?', choices: ['@Global()', '@AppModule()', '@SharedModule()', '@Root()'], a: 0 },
+            { q: 'TypeORM: ¿qué es un Repository?', choices: ['Un objeto para acceder y manipular entidades en la BD', 'Un DTO', 'Un guard', 'Un decorador'], a: 0 },
+            { q: '¿Qué es Passport en el contexto de Nest?', choices: ['Una estrategia de autenticación', 'Un ORM', 'Una librería para migraciones', 'Un tipo de módulo'], a: 0 },
+            { q: '¿Qué hace @UseInterceptors en Nest?', choices: ['Intercepta y transforma la respuesta o petición', 'Crea DTOs', 'Genera JWTs', 'Maneja relaciones de TypeORM'], a: 0 },
+            { q: '¿Qué es la inyección de dependencias?', choices: ['Patrón que suministra dependencias a clases en lugar de crearlas allí', 'Un tipo de guardia', 'Un DTO', 'Un decorator que crea tablas'], a: 0 },
+            { q: '¿Por qué usar DTOs en el backend?', choices: ['Para validar y tipar la entrada/salida de datos', 'Para migrar la BD', 'Para generar tokens', 'Para definir roles'], a: 0 },
+            { q: '¿Qué hace @Query() en un controlador?', choices: ['Obtiene parámetros de query string', 'Hace consultas SQL', 'Define relaciones', 'Genera JWT'], a: 0 },
+            { q: 'JWT: ¿qué parte del token es pública y no debe contener secretos?', choices: ['Header y payload', 'Signature', 'Secret', 'No hay parte pública'], a: 0 },
+            { q: '¿Qué es RolesGuard típico en Nest?', choices: ['Un guard que checa metadata de roles y permite/rechaza', 'Un DTO especial', 'Un servicio de TypeORM', 'Una migración'], a: 0 },
+            { q: 'TypeORM: ¿qué es eager loading?', choices: ['Cargar relaciones automáticamente al consultar la entidad', 'Una pipe de validación', 'Un guard', 'Un interceptor'], a: 0 },
+            { q: '¿Qué hace @UsePipes() en Nest?', choices: ['Aplica pipes (por ejemplo ValidationPipe) para transformar/validar datos', 'Crea JWTs', 'Aplica roles', 'Define entidades'], a: 0 },
+            { q: '¿Cuál es la ventaja de usar Guards vs Middleware para autorización?', choices: ['Guards están en el ciclo de ejecución de rutas y tienen acceso a ExecutionContext, por eso encajan mejor para autorización', 'Middleware siempre puede inyectar providers', 'Middleware es más seguro', 'Guards se ejecutan antes de middleware'], a: 0 },
+            { q: 'En TypeORM, ¿qué hace @ManyToOne?', choices: ['Define una relación donde la entidad many referencia a una entidad one', 'Define relación many-to-many', 'Define una columna primaria', 'Crea migraciones'], a: 0 },
+            { q: '¿Cuál es el patrón recomendado para refrescar tokens JWT?', choices: ['Usar refresh tokens con expiración y revocación', 'Generar siempre nuevos JWTs sin control', 'Guardar JWTs en la BD sin expiración', 'No usar refresh tokens nunca'], a: 0 },
+            { q: '¿Qué comando inicializa un proyecto Nest (CLI)?', choices: ['nest new project-name', 'npm init nest', 'npx create-nest', 'nest init project'], a: 0 },
+            { q: '¿Qué hace @SetMetadata en Nest?', choices: ['Adjunta metadata a handlers o controladores (ej. roles)', 'Crea DTOs', 'Firma JWTs', 'Genera migraciones'], a: 0 },
+            { q: 'TypeORM: ¿qué es QueryBuilder?', choices: ['API para construir consultas SQL programáticamente', 'Un guard', 'Un tipo de DTO', 'Una estrategia JWT'], a: 0 },
+            { q: '¿Cuál es la forma recomendada de almacenar la clave JWT en el servidor?', choices: ['En variables de entorno seguras', 'Hardcodeada en el código', 'En la base de datos pública', 'En el frontend'], a: 0 }
+        ];
+
+        // ======== Estado ========
+        let numParticipants = parseInt(document.getElementById('numParticipants').value, 10) || 24;
+        let participants = [];
+        let currentIndex = -1; // índice de pregunta actual
+        let history = [];
+
+        function initParticipants() {
+            participants = [];
+            for (let i = 1; i <= numParticipants; i++) {
+                participants.push({ id: i, answers: [], remaining: 2 });
+            }
+            renderParticipants();
+            populatePersonSelect();
+        }
+
+        function renderParticipants() {
+            const container = document.getElementById('participantsList');
+            container.innerHTML = '';
+            participants.forEach(p => {
+                const div = document.createElement('div');
+                div.className = 'person';
+                div.innerHTML = `<div>Persona ${p.id}</div><div class=muted>Respuestas: ${p.answers.length}/2</div>`;
+                container.appendChild(div);
+            })
+        }
+
+        function populatePersonSelect() {
+            const sel = document.getElementById('personSelect');
+            sel.innerHTML = '';
+            participants.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p.id;
+                opt.textContent = `Persona ${p.id} (${p.answers.length}/2)`;
+                if (p.answers.length >= 2) opt.disabled = true;
+                sel.appendChild(opt);
+            })
+        }
+
+        function renderQuestion(i) {
+            const q = questions[i];
+            document.getElementById('qIndex').textContent = `${i + 1} / ${questions.length}`;
+            document.getElementById('questionText').textContent = q.q;
+            const answers = document.getElementById('answers'); answers.innerHTML = '';
+            q.choices.forEach((c, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'secondary'; btn.style.textAlign = 'left'; btn.dataset.idx = idx;
+                btn.textContent = c;
+                btn.addEventListener('click', () => {
+                    selectAnswer(idx);
+                    // highlight
+                    Array.from(answers.children).forEach(ch => ch.style.border = '1px solid rgba(255,255,255,0.04)');
+                    btn.style.border = `2px solid rgba(6,182,212,0.9)`;
+                });
+                answers.appendChild(btn);
+            });
+            document.getElementById('submitBtn').disabled = false;
+            document.getElementById('info').textContent = 'Elige la persona y selecciona una respuesta.';
+        }
+
+        let chosenIdx = null;
+        function selectAnswer(idx) { chosenIdx = idx; }
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            // avanzar índice a próxima pregunta no respondida (o aleatoria)
+            if (currentIndex >= questions.length - 1) { alert('Ya llegaste al final de las preguntas.'); return; }
+            currentIndex++;
+            renderQuestion(currentIndex);
+            chosenIdx = null;
+        });
+
+        document.getElementById('submitBtn').addEventListener('click', () => {
+            const sel = document.getElementById('personSelect');
+            const pid = parseInt(sel.value, 10);
+            const person = participants.find(p => p.id === pid);
+            if (!person) { alert('Selecciona una persona válida'); return; }
+            if (person.answers.length >= 2) { alert('Esta persona ya respondió 2 preguntas'); populatePersonSelect(); return; }
+            if (chosenIdx === null) { alert('Selecciona una respuesta antes de enviar'); return; }
+            // registrar
+            const q = questions[currentIndex];
+            const correct = chosenIdx === q.a;
+            person.answers.push({ qIndex: currentIndex, answer: chosenIdx, correct });
+            person.remaining = 2 - person.answers.length;
+
+            history.unshift(`P${person.id} — P${currentIndex + 1}: ${correct ? '✅ Correcta' : '❌ Incorrecta'}`);
+            if (history.length > 6) history.pop();
+            document.getElementById('history').textContent = history.join('\n');
+            renderParticipants();
+            populatePersonSelect();
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('info').textContent = `Respuesta registrada para Persona ${person.id}. ${person.remaining} respuestas restantes.`;
+        });
+
+        document.getElementById('finishBtn').addEventListener('click', () => { showFinalSummary(); });
+        document.getElementById('showAllResults').addEventListener('click', () => { showFinalSummary(); });
+        document.getElementById('closeModal').addEventListener('click', () => { document.getElementById('modal').style.display = 'none' });
+
+        document.getElementById('resetParticipants').addEventListener('click', () => {
+            const v = parseInt(document.getElementById('numParticipants').value, 10);
+            if (isNaN(v) || v < 2 || v > 24) { alert('Número válido entre 2 y 24'); return; }
+            numParticipants = v;
+            initParticipants();
+        });
+
+        function showFinalSummary() {
+            const modal = document.getElementById('modal');
+            const container = document.getElementById('finalTable');
+            // build table
+            let html = '<table><thead><tr><th>Persona</th><th>Preguntas respondidas (número)</th><th>Respuestas (correcta/incorrecta)</th><th>Correctas</th></tr></thead><tbody>';
+            participants.forEach(p => {
+                const qnums = p.answers.map(a => a.qIndex + 1).join(', ') || '-';
+                const answers = p.answers.map(a => `${a.answer + 1} (${a.correct ? 'OK' : 'NO'})`).join(', ') || '-';
+                const correctCount = p.answers.filter(a => a.correct).length;
+                html += `<tr><td>Persona ${p.id}</td><td>${qnums}</td><td>${answers}</td><td class="${correctCount > 0 ? 'correct' : 'muted'}">${correctCount}</td></tr>`;
+            });
+            html += '</tbody></table>';
+            // resumen general
+            const totalAnswered = participants.reduce((s, p) => s + p.answers.length, 0);
+            const totalCorrect = participants.reduce((s, p) => s + p.answers.filter(a => a.correct).length, 0);
+            html = `<div class="muted">Total respuestas: ${totalAnswered} / 48 — Correctas: ${totalCorrect}</div>` + html;
+            container.innerHTML = html;
+            modal.style.display = 'flex';
+        }
+
+        document.getElementById('exportCSV').addEventListener('click', () => {
+            // simple CSV: persona, qIndex+1, answerIndex+1, correct
+            let lines = ['persona,qIndex,answer,correct'];
+            participants.forEach(p => {
+                p.answers.forEach(a => {
+                    lines.push([p.id, a.qIndex + 1, a.answer + 1, a.correct].join(','));
+                })
+            });
+            const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = 'quiz_responses.csv'; a.click(); URL.revokeObjectURL(url);
+        });
+
+        // Inicializar
+        initParticipants();
+        // autopasar a primera pregunta para comodidad
+        currentIndex = 0; renderQuestion(currentIndex);
+
+    </script>
+</body>
+
+</html>
