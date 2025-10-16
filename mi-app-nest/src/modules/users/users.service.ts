@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDTO } from 'src/dto/create-user.dto';
 import { UpdateUserDTO } from 'src/dto/update-user.dto';
@@ -36,8 +36,15 @@ export class UsersService {
     }
 
     async update(id: number, updateUser: UpdateUserDTO) {
-        const hashedPassword = await bcrypt.hash(updateUser.password, 10)
-        await this.usersRepo.update(id, {...updateUser, password: hashedPassword});
+        const dataToUpdate = { ...updateUser }
+        let dataWithPassword;
+
+        if (updateUser.password) {
+            const hashedPassword = await bcrypt.hash(updateUser.password, 10)
+            dataWithPassword = { ...dataToUpdate, password: hashedPassword }
+        }
+
+        await this.usersRepo.update(id, updateUser.password ? dataWithPassword : dataToUpdate);
         return this.findOne(id);
     }
 
