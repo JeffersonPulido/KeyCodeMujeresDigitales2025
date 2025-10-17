@@ -9,6 +9,12 @@ const usersFake = [
 
 jest.mock('bcrypt');
 
+/**
+ * A: Arrange - Organizar
+ * A: Act - Actuar
+ * A: Assert - Afirmar
+ */
+
 describe('UserService', () => {
 
     let service: UsersService;

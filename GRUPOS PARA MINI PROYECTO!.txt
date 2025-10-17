@@ -1,13 +1,13 @@
 GRUPOS PARA MINI PROYECTO!
 =====================
-Grupo 1 "Odontologia": PENDIENTE 1
+Grupo 1 "Odontologia":
 Trello: https://trello.com/invite/b/68e95d79289e0f352b811c90/ATTIfec36e7a91c7368d7df6dd0860189d802631C631/consultorio-odontologico
 Repositorio: https://github.com/98Alejag/mini-proyecto.git
 Participantes:
     Laura Marin
     Marly Alejandra
     Marianella
-    Ana Karina
+    * Ana Karina
 =====================
 Grupo 2 "Gestion de eventos": LISTO
 Trello: https://trello.com/invite/b/68ec74910ed9fb900ea25bb2/ATTIfbd3fa366c77773fe2f207681beb29e9407F3B6B/proyecto-grupo-2
@@ -27,20 +27,19 @@ Participantes:
     Valeria
     Claudia
 =====================
-Grupo 4 "Farmacia": PENDIENTE 2
+Grupo 4 "Farmacia": PENDIENTE 1
 Trello:
 https://trello.com/invite/b/68eac78aa40629bc17bdd2b4/ATTI1b26834fc0e8fd261d3992b72d1bba7459EC00CE/farmacia-mujeres-digitales-2025
-Repositorio:
-https://github.com/KellyNatalia/pharmacy
+Repositorio: https://github.com/KellyNatalia/pharmacy
 Participantes:
     Johana Jimenez
     Kelly Natalia Toro
     Melissa Ramirez
-    Wendy
+    * Wendy
 =====================
-Grupo 5 "": PENDIENTE 1
-Trello:
-Repositorio:
+Grupo 5 "Gestor Académico de Tareas":
+Trello: https://trello.com/invite/b/68f024804e1cec50bbe3a5d4/ATTIb0d66485442f189bc44bf8d92ed42816A4EC94DC/mini-proyecto
+Repositorio: https://github.com/AndreaM-95/GestorAcademicoDeTareas     
 Participantes:
     Leidy Alvarez
     Luna Salas
