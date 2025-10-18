@@ -188,12 +188,12 @@
         <header>
             <div>
                 <h1>Quiz: NestJS / TypeORM / DTO / Guards / JWT / Roles</h1>
-                <div class="muted">48 preguntas — cada persona puede responder hasta 2 preguntas</div>
+                <div class="muted">48 preguntas — cada persona puede responder hasta 3 preguntas</div>
             </div>
             <div class="controls card">
                 <label>Participantes (2–24)</label>
                 <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
-                    <input id="numParticipants" type="number" min="2" max="24" value="24" style="width:84px" />
+                    <input id="numParticipants" type="number" min="3" max="24" value="24" style="width:84px" />
                     <button id="resetParticipants" class="small secondary">Actualizar</button>
                 </div>
             </div>
@@ -236,7 +236,7 @@
                     <button id="showAllResults" class="small">Mostrar resumen final</button>
                     <button id="exportCSV" class="small secondary">Exportar CSV</button>
                 </div>
-                <footer>Nota: por defecto hay 24 participantes (cada uno puede responder 2 preguntas). Puedes ajustar el
+                <footer>Nota: por defecto hay 24 participantes (cada uno puede responder 3 preguntas). Puedes ajustar el
                     número arriba.</footer>
             </div>
         </div>
@@ -259,50 +259,38 @@
     <script>
         // ======== Preguntas (48) ========
         const questions = [
-            { q: '¿Qué es NestJS?', choices: ['Un ORM para Node', 'Un framework para construir aplicaciones Node escalables', 'Un gestor de paquetes', 'Un servicio de hosting'], a: 1 },
-            { q: '¿Cuál es la decoración usada para crear un controlador en Nest?', choices: ['@Injectable()', '@Controller()', '@Module()', '@Get()'], a: 1 },
-            { q: '¿Qué hace @Injectable() en Nest?', choices: ['Define un DTO', 'Marca una clase para inyección de dependencias', 'Define una ruta', 'Configura guardias'], a: 1 },
-            { q: 'En TypeORM, ¿qué decorador indica la columna primaria?', choices: ['@PrimaryGeneratedColumn()', '@ColumnPrimary()', '@Id()', '@PK()'], a: 0 },
-            { q: '¿Qué es un DTO?', choices: ['Data Transfer Object', 'Data Type Operator', 'Domain Type Option', 'Direct Transfer Object'], a: 0 },
-            { q: '¿Para qué sirve un Guard en NestJS?', choices: ['Persistir datos', 'Validar autorizaciones antes de ejecutar un handler', 'Transformar respuestas', 'Loguear errores'], a: 1 },
-            { q: '¿Qué es JWT?', choices: ['Un tipo de base de datos', 'Un formato de token para autenticación', 'Un framework CSS', 'Un ORM'], a: 1 },
-            { q: 'En Nest, ¿cómo defines una ruta GET en un controlador?', choices: ['@Get("/path")', 'get("/path")', 'router.get("/path")', '@Route("/path")'], a: 0 },
-            { q: 'TypeORM: ¿qué tipo de relación usarías para muchos a muchos?', choices: ['@OneToOne', '@OneToMany', '@ManyToMany', '@ManyToOne'], a: 2 },
-            { q: '¿Qué hace class-validator en DTOs?', choices: ['Permite validar y decorar propiedades', 'Conecta a la base de datos', 'Genera migraciones', 'Maneja autenticación'], a: 0 },
-            { q: '¿Cuál es el propósito de un Module en Nest?', choices: ['Agrupar providers/controllers relacionados', 'Crear tablas en BD', 'Enviar correos', 'Gestionar tokens JWT'], a: 0 },
-            { q: '¿Qué decorador transforma y valida un DTO en un controlador?', choices: ['@ValidateBody()', '@UsePipes(ValidationPipe)', '@UseGuards(ValidationGuard)', '@TransformBody()'], a: 1 },
-            { q: 'En JWT, ¿qué contiene normalmente el "payload"?', choices: ['Código fuente', 'Claims sobre el usuario (id, roles)', 'La clave privada', 'La base de datos'], a: 1 },
-            { q: 'TypeORM: ¿qué comando genera una migración (CLI)?', choices: ['typeorm migration:generate', 'typeorm create:migration', 'npm run gen:migration', 'typeorm:make:migration'], a: 0 },
-            { q: '¿Qué es un Provider en Nest?', choices: ['Un servicio que puede ser inyectado', 'Un tipo de controlador', 'Un DTO especial', 'Una entidad de TypeORM'], a: 0 },
-            { q: '¿Cómo protegerías una ruta para que solo usuarios con rol ADMIN accedan?', choices: ['Con DTO', 'Con un Guard que verifique roles', 'Con TypeORM', 'Con una migración'], a: 1 },
-            { q: '¿Qué es @Body() en un controlador de Nest?', choices: ['Inyecta el body de la petición', 'Define un DTO', 'Valida la petición', 'Protege la ruta'], a: 0 },
-            { q: 'TypeORM: ¿qué decorador se usa para columnas regulares?', choices: ['@Column()', '@Field()', '@Property()', '@Attr()'], a: 0 },
-            { q: '¿Cuál es la estrategia común para almacenar JWTs en el frontend?', choices: ['En localStorage o cookies (con HttpOnly preferible)', 'Guardar en la base de datos', 'En archivos del sistema', 'No almacenar JWT'], a: 0 },
-            { q: '¿Qué hace @UseGuards()?', choices: ['Aplica guardias a rutas o controladores', 'Valida DTOs', 'Genera tokens JWT', 'Crea migraciones'], a: 0 },
-            { q: '¿Qué módulo provee soporte para TypeORM en Nest?', choices: ['TypeOrmModule', 'OrmNestModule', 'DatabaseModule', 'NestTypeModule'], a: 0 },
-            { q: '¿Cuál es el propósito de @GetRepositoryToken en tests?', choices: ['Obtener token JWT', 'Inyectar un repositorio en tests', 'Crear migraciones', 'Configurar guardias'], a: 1 },
-            { q: '¿Qué hace @Param("id") en un controlador?', choices: ['Obtiene el parámetro de ruta "id"', 'Valida el body', 'Transforma el DTO', 'Crea un JWT'], a: 0 },
-            { q: '¿Qué significa sincronizar entidades en TypeORM (synchronize:true)?', choices: ['Sincroniza el schema con las entidades automáticamente (no recomendado en prod)', 'Sincroniza los tokens JWT', 'Sincroniza roles', 'Sincroniza los DTOs'], a: 0 },
-            { q: '¿Cuál es la forma de firmar un JWT?', choices: ['Con una clave/secret o par de llaves', 'Con class-validator', 'Con TypeORM', 'Con DTOs'], a: 0 },
-            { q: '¿Qué operador en un Guard devuelve si deja pasar la petición?', choices: ['false/true', 'next()', 'pass()', 'allow()'], a: 0 },
-            { q: 'En Nest, ¿qué decorador se usa para marcar un módulo globalmente disponible?', choices: ['@Global()', '@AppModule()', '@SharedModule()', '@Root()'], a: 0 },
-            { q: 'TypeORM: ¿qué es un Repository?', choices: ['Un objeto para acceder y manipular entidades en la BD', 'Un DTO', 'Un guard', 'Un decorador'], a: 0 },
-            { q: '¿Qué es Passport en el contexto de Nest?', choices: ['Una estrategia de autenticación', 'Un ORM', 'Una librería para migraciones', 'Un tipo de módulo'], a: 0 },
-            { q: '¿Qué hace @UseInterceptors en Nest?', choices: ['Intercepta y transforma la respuesta o petición', 'Crea DTOs', 'Genera JWTs', 'Maneja relaciones de TypeORM'], a: 0 },
-            { q: '¿Qué es la inyección de dependencias?', choices: ['Patrón que suministra dependencias a clases en lugar de crearlas allí', 'Un tipo de guardia', 'Un DTO', 'Un decorator que crea tablas'], a: 0 },
-            { q: '¿Por qué usar DTOs en el backend?', choices: ['Para validar y tipar la entrada/salida de datos', 'Para migrar la BD', 'Para generar tokens', 'Para definir roles'], a: 0 },
-            { q: '¿Qué hace @Query() en un controlador?', choices: ['Obtiene parámetros de query string', 'Hace consultas SQL', 'Define relaciones', 'Genera JWT'], a: 0 },
-            { q: 'JWT: ¿qué parte del token es pública y no debe contener secretos?', choices: ['Header y payload', 'Signature', 'Secret', 'No hay parte pública'], a: 0 },
-            { q: '¿Qué es RolesGuard típico en Nest?', choices: ['Un guard que checa metadata de roles y permite/rechaza', 'Un DTO especial', 'Un servicio de TypeORM', 'Una migración'], a: 0 },
-            { q: 'TypeORM: ¿qué es eager loading?', choices: ['Cargar relaciones automáticamente al consultar la entidad', 'Una pipe de validación', 'Un guard', 'Un interceptor'], a: 0 },
-            { q: '¿Qué hace @UsePipes() en Nest?', choices: ['Aplica pipes (por ejemplo ValidationPipe) para transformar/validar datos', 'Crea JWTs', 'Aplica roles', 'Define entidades'], a: 0 },
-            { q: '¿Cuál es la ventaja de usar Guards vs Middleware para autorización?', choices: ['Guards están en el ciclo de ejecución de rutas y tienen acceso a ExecutionContext, por eso encajan mejor para autorización', 'Middleware siempre puede inyectar providers', 'Middleware es más seguro', 'Guards se ejecutan antes de middleware'], a: 0 },
-            { q: 'En TypeORM, ¿qué hace @ManyToOne?', choices: ['Define una relación donde la entidad many referencia a una entidad one', 'Define relación many-to-many', 'Define una columna primaria', 'Crea migraciones'], a: 0 },
-            { q: '¿Cuál es el patrón recomendado para refrescar tokens JWT?', choices: ['Usar refresh tokens con expiración y revocación', 'Generar siempre nuevos JWTs sin control', 'Guardar JWTs en la BD sin expiración', 'No usar refresh tokens nunca'], a: 0 },
-            { q: '¿Qué comando inicializa un proyecto Nest (CLI)?', choices: ['nest new project-name', 'npm init nest', 'npx create-nest', 'nest init project'], a: 0 },
-            { q: '¿Qué hace @SetMetadata en Nest?', choices: ['Adjunta metadata a handlers o controladores (ej. roles)', 'Crea DTOs', 'Firma JWTs', 'Genera migraciones'], a: 0 },
-            { q: 'TypeORM: ¿qué es QueryBuilder?', choices: ['API para construir consultas SQL programáticamente', 'Un guard', 'Un tipo de DTO', 'Una estrategia JWT'], a: 0 },
-            { q: '¿Cuál es la forma recomendada de almacenar la clave JWT en el servidor?', choices: ['En variables de entorno seguras', 'Hardcodeada en el código', 'En la base de datos pública', 'En el frontend'], a: 0 }
+            {
+                q: '¿Cuál es la función principal de un Controller en NestJS?',
+                choices: [
+                    'Manejar la lógica de negocio de la aplicación',
+                    'Definir las rutas y manejar las peticiones HTTP',
+                    'Configurar los módulos de la aplicación',
+                    'Gestionar las conexiones a la base de datos'
+                ],
+                a: 1
+            },
+
+            {
+                q: '¿Qué propósito tiene un Guard en NestJS?',
+                choices: [
+                    'Validar datos de entrada en DTOs',
+                    'Proteger rutas y controlar el acceso según condiciones o roles',
+                    'Interceptar respuestas antes de enviarlas al cliente',
+                    'Ejecutar tareas en segundo plano'
+                ],
+                a: 1
+            },
+
+            {
+                q: '¿Qué contiene normalmente un Service en NestJS?',
+                choices: [
+                    'Decoradores de rutas y middlewares',
+                    'Configuraciones globales de la aplicación',
+                    'Lógica de negocio reutilizable y comunicación con repositorios o APIs',
+                    'Filtros de excepciones y pipes personalizados'
+                ],
+                a: 2
+            }
         ];
 
         // ======== Estado ========
@@ -314,7 +302,7 @@
         function initParticipants() {
             participants = [];
             for (let i = 1; i <= numParticipants; i++) {
-                participants.push({ id: i, answers: [], remaining: 2 });
+                participants.push({ id: i, answers: [], remaining: 3 });
             }
             renderParticipants();
             populatePersonSelect();
@@ -326,7 +314,7 @@
             participants.forEach(p => {
                 const div = document.createElement('div');
                 div.className = 'person';
-                div.innerHTML = `<div>Persona ${p.id}</div><div class=muted>Respuestas: ${p.answers.length}/2</div>`;
+                div.innerHTML = `<div>Persona ${p.id}</div><div class=muted>Respuestas: ${p.answers.length}/3</div>`;
                 container.appendChild(div);
             })
         }
@@ -337,8 +325,8 @@
             participants.forEach(p => {
                 const opt = document.createElement('option');
                 opt.value = p.id;
-                opt.textContent = `Persona ${p.id} (${p.answers.length}/2)`;
-                if (p.answers.length >= 2) opt.disabled = true;
+                opt.textContent = `Persona ${p.id} (${p.answers.length}/3)`;
+                if (p.answers.length >= 3) opt.disabled = true;
                 sel.appendChild(opt);
             })
         }
@@ -380,13 +368,13 @@
             const pid = parseInt(sel.value, 10);
             const person = participants.find(p => p.id === pid);
             if (!person) { alert('Selecciona una persona válida'); return; }
-            if (person.answers.length >= 2) { alert('Esta persona ya respondió 2 preguntas'); populatePersonSelect(); return; }
+            if (person.answers.length >= 3) { alert('Esta persona ya respondió 3 preguntas'); populatePersonSelect(); return; }
             if (chosenIdx === null) { alert('Selecciona una respuesta antes de enviar'); return; }
             // registrar
             const q = questions[currentIndex];
             const correct = chosenIdx === q.a;
             person.answers.push({ qIndex: currentIndex, answer: chosenIdx, correct });
-            person.remaining = 2 - person.answers.length;
+            person.remaining = 3 - person.answers.length;
 
             history.unshift(`P${person.id} — P${currentIndex + 1}: ${correct ? '✅ Correcta' : '❌ Incorrecta'}`);
             if (history.length > 6) history.pop();
@@ -403,7 +391,7 @@
 
         document.getElementById('resetParticipants').addEventListener('click', () => {
             const v = parseInt(document.getElementById('numParticipants').value, 10);
-            if (isNaN(v) || v < 2 || v > 24) { alert('Número válido entre 2 y 24'); return; }
+            if (isNaN(v) || v < 3 || v > 24) { alert('Número válido entre 3 y 24'); return; }
             numParticipants = v;
             initParticipants();
         });

@@ -22,7 +22,7 @@ export class UsersService {
      * findOne: Method to find unique register to user repository
      * @typeParam id - { String } - Id for recognize user
      * @returns IUser - Unique register
-     */
+    */
 
     async findOne(id: number) {
         const userFind = await this.usersRepo.findOne({ where: { id } })
