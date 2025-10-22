@@ -7,9 +7,8 @@ Participantes:
     Laura Marin
     Marly Alejandra
     Marianella
-    * Ana Karina
 =====================
-Grupo 2 "Gestion de eventos": LISTO
+Grupo 2 "Gestion de eventos":
 Trello: https://trello.com/invite/b/68ec74910ed9fb900ea25bb2/ATTIfbd3fa366c77773fe2f207681beb29e9407F3B6B/proyecto-grupo-2
 Repositorio: https://github.com/Zharickmich12/appnest-events
 Participantes:
@@ -18,16 +17,16 @@ Participantes:
     Luisa Maria
     Elena Henao
 =====================
-Grupo 3 "Mi bolsillo": LISTO
+Grupo 3 "Mi bolsillo":
 Trello: https://trello.com/invite/b/68e997e5ea2cede4399f0903/ATTIab46027e115770925c6648a0ad9b65dd5C948C89/mi-bolsillo
-Repositorio: https://github.com/Dani-02R/Proyecto-mujeres-digitales.git
+Repositorio: https://github.com/Dani-02R/Mi-bolsillo.git
 Participantes:
     Ana Sofia
     Heidy
     Valeria
     Claudia
 =====================
-Grupo 4 "Farmacia": PENDIENTE 1
+Grupo 4 "Farmacia":
 Trello:
 https://trello.com/invite/b/68eac78aa40629bc17bdd2b4/ATTI1b26834fc0e8fd261d3992b72d1bba7459EC00CE/farmacia-mujeres-digitales-2025
 Repositorio: https://github.com/KellyNatalia/pharmacy
@@ -35,7 +34,6 @@ Participantes:
     Johana Jimenez
     Kelly Natalia Toro
     Melissa Ramirez
-    * Wendy
 =====================
 Grupo 5 "Gestor Académico de Tareas":
 Trello: https://trello.com/invite/b/68f024804e1cec50bbe3a5d4/ATTIb0d66485442f189bc44bf8d92ed42816A4EC94DC/mini-proyecto
@@ -45,16 +43,38 @@ Participantes:
     Luna Salas
     Andrea Mejía
     Maria Angel
-    Laura Catalina
 =====================
 Grupo 6 "Back Travel":
 Trello: https://trello.com/invite/b/68eedf3b506aa193ddd8d97d/ATTIaec9f1d5a406d5b4d1ab05eef90368301F98E110/back-travel
 Repositorio: https://github.com/carolinamoralese/back-travel
 Participantes:
     Carolina Morales
+
+| Criterio                       | Ponderación | Calificación |
+| ------------------------------ | ----------- | ------------ |
+| Arquitectura y estructura      | 20%         | 4.0          |
+| Autenticación JWT              | 15%         | 4.0          |
+| Roles y permisos               | 10%         | 3.5          |
+| Login / Registro               | 10%         | 3.8          |
+| Swagger / Documentación API    | 10%         | 3.5          |
+| DB / Migraciones               | 10%         | 3.5          |
+| README y documentación técnica | 15%         | 2.5          |
+| Estilo y calidad de código     | 10%         | 3.5          |
+| **Total promedio ponderado**   | **100%**    | **3.6 / 5**  |
+
+
 =====================
 Grupo 7 "":
 Trello: 
 Repositorio:
 Participantes:
     Zharick Londoño
+=====================
+Grupo 8 "":
+Trello: 
+Repositorio: 
+Participantes:
+    Laura Catalina
+    Wendy
+    Ana Karina
+=====================
