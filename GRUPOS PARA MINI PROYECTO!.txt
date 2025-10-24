@@ -18,8 +18,8 @@ Participantes:
     Elena Henao
 =====================
 Grupo 3 "Mi bolsillo":
-Trello: https://trello.com/invite/b/68e997e5ea2cede4399f0903/ATTIab46027e115770925c6648a0ad9b65dd5C948C89/mi-bolsillo
-Repositorio: https://github.com/Dani-02R/Mi-bolsillo.git
+Repositorio: https://github.com/SciMar/miBolsillo.git
+Trello: https://trello.com/b/lZBULoNB/mi-bolsillo
 Participantes:
     Ana Sofia
     Heidy
