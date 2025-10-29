@@ -25,6 +25,13 @@ export class AuthController {
         return this.authService.login(data);
     }
 
+    @Post('logout')
+    @UseGuards(JwtAuthGuard)
+    logout(@Request() req) {
+        const token = req.headers.authorization?.split(' ')[1]
+        return this.authService.logout(token);
+    }
+
     @UseGuards(JwtAuthGuard)
     @Get('profile')
     @ApiOperation({ summary: 'Devuelve la informacion del usuario' })
