@@ -61,8 +61,6 @@ Participantes:
 | README y documentación técnica | 15%         | 2.5          |
 | Estilo y calidad de código     | 10%         | 3.5          |
 | **Total promedio ponderado**   | **100%**    | **3.6 / 5**  |
-
-
 =====================
 Grupo 7 "":
 Trello: 
@@ -75,6 +73,4 @@ Trello:
 Repositorio: 
 Participantes:
     Laura Catalina
-    Wendy
-    Ana Karina
 =====================
